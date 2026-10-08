@@ -30,17 +30,21 @@ export default function Home() {
       });
 
       const data = await response.json();
-      const assistantMessage: Message = {
-        role: 'assistant',
-        content: data.reply || 'No reply generated.',
-      };
-      setMessages((prev) => [...prev, assistantMessage]);
-    } catch (error) {
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Something went wrong');
+      }
+
+      setMessages((prev) => [
+        ...prev,
+        { role: 'assistant', content: data.reply || 'No response generated.' },
+      ]);
+    } catch (error: any) {
       setMessages((prev) => [
         ...prev,
         {
           role: 'assistant',
-          content: 'Sorry, something went wrong. Please try again.',
+          content: `Error: ${error.message || 'Please try again.'}`,
         },
       ]);
     } finally {
@@ -53,17 +57,17 @@ export default function Home() {
       <div style={styles.shell}>
         <header style={styles.header}>
           <div>
-            <p style={styles.badge}>DEMO</p>
+            <p style={styles.badge}>REAL AI</p>
             <h1 style={styles.title}>AI Agent</h1>
           </div>
-          <span style={styles.status}>No API key required</span>
+          <span style={styles.status}>OpenAI powered</span>
         </header>
 
         <div style={styles.chatBox}>
           {messages.length === 0 ? (
             <div style={styles.emptyState}>
               <strong>Hello!</strong>
-              <p>Ask me anything — I can answer general questions, explain concepts, and help with ideas.</p>
+              <p>Ask me anything. I use OpenAI to answer general questions.</p>
             </div>
           ) : (
             messages.map((message, index) => (
@@ -112,7 +116,7 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: 'center',
     justifyContent: 'center',
     padding: '24px',
-    background: 'linear-gradient(135deg, #f0fdfa 0%, #eef2ff 100%)',
+    background: 'linear-gradient(135deg, #ecfeff 0%, #dbeafe 100%)',
   },
   shell: {
     width: '100%',
@@ -120,7 +124,7 @@ const styles: Record<string, React.CSSProperties> = {
     background: '#ffffff',
     border: '1px solid #dbeafe',
     borderRadius: '20px',
-    boxShadow: '0 20px 60px rgba(15, 23, 42, 0.10)',
+    boxShadow: '0 20px 60px rgba(15, 23, 42, 0.12)',
     padding: '24px',
   },
   header: {
@@ -144,9 +148,9 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: '2rem',
   },
   status: {
-    background: '#ecfeff',
-    color: '#0f766e',
-    border: '1px solid #a7f3d0',
+    background: '#e0f2fe',
+    color: '#075985',
+    border: '1px solid #bae6fd',
     borderRadius: '999px',
     padding: '8px 14px',
     fontSize: '12px',
